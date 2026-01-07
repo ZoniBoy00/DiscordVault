@@ -1,0 +1,23 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Database
+*.db
+*.db-journal
+
+# Environment variables
+.env
+
+# Go workspace
+vendor/
+go.work
+go.work.sum
+
+# OS generated files
+.DS_Store
+Thumbs.db

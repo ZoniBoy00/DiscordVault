@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Vault 🛡️ | Secure Cloud</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070a;
+            --card: rgba(22, 28, 45, 0.7);
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #1e293b, #05070a);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .glass {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .shoutout {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .upload-area {
+            padding: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 1rem;
+            padding: 4rem 2rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.05);
+            transform: scale(1.01);
+        }
+
+        .icon-large {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        /* Progress Styles */
+        .progress-box {
+            display: none;
+            padding: 1rem;
+        }
+
+        .bar-container {
+            height: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            box-shadow: 0 0 20px var(--accent-glow);
+            border-radius: 20px;
+            transition: width 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .stat-val {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-lbl {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* File Table */
+        .file-card {
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.2rem;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 1.2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .btn-dl {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .btn-dl:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+        }
+
+        .btn-del {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-del:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Log Terminal */
+        #log-terminal {
+            margin-top: 2rem;
+            background: #000;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .log-line {
+            margin-bottom: 0.4rem;
+            border-left: 2px solid var(--accent);
+            padding-left: 0.8rem;
+        }
+
+        .log-ts {
+            color: var(--text-dim);
+            margin-right: 0.5rem;
+        }
+
+        .log-msg.success {
+            color: var(--success);
+        }
+
+        .log-msg.error {
+            color: var(--danger);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Discord Vault</h1>
+            <div class="shoutout">🛡️ SECURE AES-256 ENCRYPTION ACTIVE</div>
+        </header>
+
+        <main>
+            <section class="glass upload-area">
+                <div id="drop-zone" class="drop-zone">
+                    <span class="icon-large">☁️</span>
+                    <h2 style="margin:0">Secure Deployment</h2>
+                    <p style="color: var(--text-dim)">Drag & drop files to split, encrypt, and lock away</p>
+                    <input type="file" id="file-input" style="display:none">
+                </div>
+
+                <div id="upload-status" class="progress-box">
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-lbl">Velocity</span>
+                            <span id="stat-speed" class="stat-val">0 KB/s</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-lbl">Payload</span>
+                            <span id="stat-total" class="stat-val">0 / 0 MB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-lbl">Time Left</span>
+                            <span id="stat-eta" class="stat-val">--:--</span>
+                        </div>
+                    </div>
+
+                    <div class="bar-container">
+                        <div id="bar-fill" class="bar-fill"></div>
+                    </div>
+
+                    <p id="status-msg" class="loading"
+                        style="font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 2px;">
+                        Encrypting Packets...</p>
+                </div>
+            </section>
+
+            <section class="glass file-card">
+                <header
+                    style="text-align: left; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin:0">Encrypted Assets</h3>
+                    <span id="file-count" style="font-size: 0.8rem; color: var(--text-dim)">0 Objects</span>
+                </header>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">ID</th>
+                            <th>Identifer</th>
+                            <th>Volume</th>
+                            <th>Date</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="file-list"></tbody>
+                </table>
+            </section>
+
+            <div id="log-terminal"></div>
+        </main>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadBox = document.getElementById('upload-status');
+        const barFill = document.getElementById('bar-fill');
+        const statSpeed = document.getElementById('stat-speed');
+        const statTotal = document.getElementById('stat-total');
+        const statEta = document.getElementById('stat-eta');
+        const statusMsg = document.getElementById('status-msg');
+        const terminal = document.getElementById('log-terminal');
+        const fileList = document.getElementById('file-list');
+
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.className = `log-line`;
+            div.innerHTML = `<span class="log-ts">[${new Date().toLocaleTimeString()}]</span> <span class="log-msg ${type}">${msg}</span>`;
+            terminal.prepend(div);
+        }
+
+        async function refresh() {
+            try {
+                const res = await fetch('/api/files');
+                const data = await res.json();
+                render(data);
+            } catch (e) { log('ERR: Registry Offline', 'error'); }
+        }
+
+        function render(files) {
+            fileList.innerHTML = '';
+            document.getElementById('file-count').innerText = `${files ? files.length : 0} Objects`;
+            if (!files || files.length === 0) {
+                fileList.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-dim); padding: 3rem;">NO ENCRYPTED PAYLOADS DETECTED</td></tr>';
+                return;
+            }
+            files.forEach(f => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color: var(--text-dim); font-family: monospace;">#${f.ID}</td>
+                    <td style="font-weight:600">${f.Name}</td>
+                    <td>${fmtSize(f.Size)}</td>
+                    <td style="color:var(--text-dim)">${new Date(f.CreatedAt).toLocaleDateString()}</td>
+                    <td style="text-align:right">
+                        <a href="/api/download/${f.ID}" class="btn btn-dl">Download</a>
+                        <button onclick="del(${f.ID})" class="btn btn-del">Wipe</button>
+                    </td>
+                `;
+                fileList.appendChild(tr);
+            });
+        }
+
+        async function del(id) {
+            if (!confirm('CONFIRM DESTRUCTION?')) return;
+            log(`Wiping object ${id}...`);
+            try {
+                const res = await fetch(`/api/delete/${id}`, { method: 'POST' });
+                if (res.ok) { log(`Object ${id} purged from Discord Cluster.`, 'success'); refresh(); }
+            } catch (e) { log(`PURGE FAILED for ID ${id}`, 'error'); }
+        }
+
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = e => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; };
+        dropZone.ondragleave = () => dropZone.style.borderColor = 'var(--border)';
+        dropZone.ondrop = e => { e.preventDefault(); handle(e.dataTransfer.files); };
+        fileInput.onchange = e => handle(e.target.files);
+
+        function handle(files) {
+            if (!files.length) return;
+            const file = files[0];
+            const xhr = new XMLHttpRequest();
+            const start = Date.now();
+
+            dropZone.style.display = 'none';
+            uploadBox.style.display = 'block';
+            log(`Payload Injection Started: ${file.name} (${fmtSize(file.size)})`);
+
+            xhr.upload.onprogress = e => {
+                const pct = (e.loaded / e.total) * 100;
+                const sec = (Date.now() - start) / 1000;
+                const mbps = (e.loaded / sec) / 1024 / 1024;
+                const rem = (e.total - e.loaded) / (e.loaded / sec);
+
+                barFill.style.width = pct + '%';
+                statSpeed.innerText = mbps.toFixed(2) + ' MB/s';
+                statTotal.innerText = `${fmtSize(e.loaded)} / ${fmtSize(e.total)}`;
+                statEta.innerText = isFinite(rem) ? Math.ceil(rem) + 's' : '--:--';
+                statusMsg.innerText = `Synchronizing Chunks... ${pct.toFixed(0)}%`;
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    statusMsg.innerText = 'MISSION SUCCESSFUL';
+                    statusMsg.style.color = 'var(--success)';
+                    log(`Success: ${file.name} is now encrypted in the vault.`, 'success');
+                    setTimeout(() => { location.reload(); }, 1500);
+                }
+            };
+
+            const fd = new FormData();
+            fd.append('file', file);
+            xhr.open('POST', '/api/upload');
+            xhr.send(fd);
+        }
+
+        function fmtSize(b) {
+            if (b === 0) return '0B';
+            const k = 1024;
+            const s = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(b) / Math.log(k));
+            return (b / Math.pow(k, i)).toFixed(1) + s[i];
+        }
+
+        refresh();
+        log('Neural Link Established. System Ready.', 'success');
+    </script>
+</body>
+
+</html>
